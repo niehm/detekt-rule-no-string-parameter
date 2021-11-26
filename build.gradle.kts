@@ -1,12 +1,14 @@
+import io.gitlab.arturbosch.detekt.Detekt
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("jvm") version "1.5.21"
+    kotlin("jvm") version "1.6.0"
     `maven-publish`
+    id("io.gitlab.arturbosch.detekt") version "1.18.1"
 }
 
-group = "com.github.niehm.detektrulenostringparameter"
-version = "1.0-SNAPSHOT"
+group = "com.github.niehm"
+version = "0.0.0-SNAPSHOT"
 
 repositories {
     mavenCentral()
@@ -17,11 +19,22 @@ dependencies {
 
     testImplementation("io.gitlab.arturbosch.detekt:detekt-test:1.18.1")
     testImplementation("org.assertj:assertj-core:3.21.0")
-    testImplementation("junit:junit:4.13.2")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.8.1")
 }
 
-tasks.withType<KotlinCompile>() {
-    kotlinOptions.jvmTarget = "11"
+tasks {
+    withType<KotlinCompile> {
+        kotlinOptions.jvmTarget = "11"
+    }
+
+    withType<Test> {
+        useJUnitPlatform()
+    }
+
+    withType<Detekt> {
+        // Target version of the generated JVM bytecode. It is used for type resolution.
+        this.jvmTarget = "11"
+    }
 }
 
 publishing {
